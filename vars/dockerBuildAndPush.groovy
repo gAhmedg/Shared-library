@@ -1,23 +1,12 @@
-def call(Map config [:]) {
-  
-  
-  sh """
-    #Build the image
-    docker build --tag ${config.imageName} .
-
-    #login before  pushing to registry if required
-    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-
-    #push images to registery
-    docker push ${config.imageName}
-    docker logout
-
-  """
-
+#!usr/bin/env groovy
+def call(String dockerHubCredentialsID, String imageName) {
+	// Log in to DockerHub 
+	withCredentials([usernamePassword(credentialsId: "${dockerHubCredentialsID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+		sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+        }
+        
+        // Build and push Docker image
+        echo "Building and Pushing Docker image..."
+        sh "docker build -t ${imageName}:${BUILD_NUMBER} ."
+        sh "docker push ${imageName}:${BUILD_NUMBER}"	 
 }
-
-
- 
-/*
-dockerBuildAndPush( imageName: "", port : "")
-*/
