@@ -1,5 +1,5 @@
 def call(Map config) {
-  def containerId = (env.JOB_NAME+env.BUILD_NUMBER).toLowerCase()
+  
   
   sh """
     #Build the image
@@ -10,17 +10,14 @@ def call(Map config) {
 
     #push images to registery
     docker push ${config.imageName}
+    docker logout
 
   """
 
 
 
 
- if (dockerBuildAndPush( imageName: "", port : "")) {
-                echo 'push'
-            } else {
-                echo 'I execute elsewhere'
-            }  
+ 
 /*
 dockerBuildAndPush( imageName: "", port : "")
 */
