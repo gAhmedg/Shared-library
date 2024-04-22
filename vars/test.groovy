@@ -3,7 +3,7 @@ def call(Map config = [:]) {
     sh "docker build --tag ${config.image} ."
     
     // Login to Dockerhub using provided credentials
-    withCredentials([usernamePassword(credentialsId: 'DOCKERHUB', passwordVariable: 'password', usernameVariable: 'user')]) {
+    withCredentials([usernamePassword(credentialsId: config.DockerCredentials, passwordVariable: 'password', usernameVariable: 'user')]) {
         sh "docker login -u ${user} -p ${password}"
     }
     
