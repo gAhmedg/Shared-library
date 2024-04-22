@@ -1,9 +1,12 @@
-#!usr/bin/env groovy
-def call( String imageName) {
-	
-        
-        // Build and push Docker image
-        echo "Building and Pushing Docker image..."
-        sh "docker build -t ${imageName}:${BUILD_NUMBER} ."
-        sh "docker push ${imageName}:${BUILD_NUMBER}"	 
+
+
+
+
+
+def call(Map config = [:]) {
+  sh "docker build --tag ${config.image} ."
+  withCredentials([usernamePassword(credentialsId: config.DockerhubCredentials, passwordVariable: 'password', usernameVariable: 'user')]) {
+    sh "docker login -u ${user} -p ${password}"
+}
+  sh "docker push ${config.image}"
 }
